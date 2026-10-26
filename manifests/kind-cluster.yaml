@@ -1,0 +1,16 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+  - hostPath: ./manifests/webhook-kubeconfig.yaml
+    containerPath: /etc/kubernetes/webhook-kubeconfig.yaml
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        authorization-mode: Webhook,RBAC
+        authorization-webhook-config-file: /etc/kubernetes/webhook-kubeconfig.yaml
+        authorization-webhook-cache-authorized-ttl: 0s
+        authorization-webhook-cache-unauthorized-ttl: 0s
